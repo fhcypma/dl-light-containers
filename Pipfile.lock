@@ -151,10 +151,6 @@
             "markers": "python_version >= '3.7'",
             "version": "==9.0.0"
         },
-        "my-package": {
-            "editable": true,
-            "path": "/Users/frankypma/dev/new-project"
-        },
         "publication": {
             "hashes": [
                 "sha256:0248885351febc11d8a1098d5c8e3ab2dabcf3e8c0c96db1e17ecd12b53afbe6",
