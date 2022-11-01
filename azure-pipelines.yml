@@ -26,7 +26,7 @@ stages:
       inputs:
         artifactFeeds: 'dl-light/dl-light-infra'
         # Setting this variable to "true" will force pip to get distributions from official python registry first and fallback to feeds mentioned above if distributions are not found there.
-        onlyAddExtraIndex: true
+        onlyAddExtraIndex: true
 
     - script: |
         python -m pip install pipenv
