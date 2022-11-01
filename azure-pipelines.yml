@@ -71,7 +71,7 @@ stages:
 
     - task: AWSShellScript@1
       inputs:
-        awsCredentials: 'ydata-deploy'
+        awsCredentials: 'yds-deploy'
         regionName: 'eu-west-1'
         scriptType: 'inline'
         inlineScript: ENV_FOR_DYNACONF=prd DYNACONF_BUILD_NUMBER=$(Build.BuildNumber) cdk deploy PrdContainerStack --require-approval never

@@ -2,7 +2,11 @@
 
 Containers stack for AWS datalake
 
-## 
+## Install dependencies
+
+```shell
+make install
+```
 
 ## Test container
 
@@ -10,7 +14,13 @@ Containers stack for AWS datalake
 make test
 ```
 
-## Deploy from local to dev
+## Code checks
+
+```shell
+make code
+```
+
+## Deploy to dev
 
 ```shell
 ENV_FOR_DYNACONF=dev cdk deploy
