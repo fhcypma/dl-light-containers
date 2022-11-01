@@ -13,6 +13,8 @@ aws-cdk-lib = "*"
 cdk-ecr-deployment = "*"
 constructs = "*"
 dynaconf = "*"
+artifacts-keyring = "*"
+dl-light-infra = {version = "*", index = "azdo"}
 
 [dev-packages]
 pytest = "*"
