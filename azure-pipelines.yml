@@ -24,7 +24,7 @@ stages:
     - task: PipAuthenticate@1
       displayName: 'Pip Authenticate'
       inputs:
-        artifactFeeds: 'dl-light/dl-light-infra'
+        artifactFeeds: 'dl-light/dl-light'
         # Setting this variable to "true" will force pip to get distributions from official python registry first and fallback to feeds mentioned above if distributions are not found there.
         onlyAddExtraIndex: true
 
