@@ -21,6 +21,13 @@ stages:
         versionSpec: '3.9'
       displayName: 'Use Python 3.9'
 
+    - task: PipAuthenticate@1
+      displayName: 'Pip Authenticate'
+      inputs:
+        artifactFeeds: 'dl-light/dl-light-infra'
+        # Setting this variable to "true" will force pip to get distributions from official python registry first and fallback to feeds mentioned above if distributions are not found there.
+        onlyAddExtraIndex: true
+
     - script: |
         python -m pip install pipenv
         python -m pipenv requirements --dev > requirements-dev.txt
