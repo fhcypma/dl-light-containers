@@ -1,0 +1,28 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[[source]]
+url = "https://pkgs.dev.azure.com/ypma-data/dl-light/_packaging/dl-light/pypi/simple/"
+verify_ssl = true
+name = "azdo"
+
+[packages]
+aws-cdk-lib = "*"
+cdk-ecr-deployment = "*"
+constructs = "*"
+dynaconf = "*"
+dl-light-infra = {version = "*", index = "azdo"}
+
+[dev-packages]
+pytest = "*"
+boto3 = "*"
+build = "*"
+black = "*"
+flake8 = "*"
+mypy = "*"
+docker = "*"
+
+[requires]
+python_version = "3.9"
