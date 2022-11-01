@@ -1,0 +1,19 @@
+default:
+  aws:
+    region: eu-west-1
+    accounts:
+      deploy: "092113928458"
+      data: "534282717446"
+      etl: "319406913669"
+
+    tags:
+      Environment: "@format {this.current_env}"
+      Application: "Common"
+  
+  # Version for the docker container
+  # To be overwritten by pipeline in DYNACONF_BUILD_NUMBER
+  build_number: "local"
+
+prd: # Run on AWS
+
+dev: # Run on AWS. Meant to be deployed from local
