@@ -29,9 +29,10 @@ stages:
         onlyAddExtraIndex: true
 
     - script: |
+        echo "extra-index-url: $(PIP_EXTRA_INDEX_URL)"
         python -m pip install pipenv
         python -m pipenv requirements --dev > requirements-dev.txt
-        python -m pip install -r requirements-dev.txt
+        python -m pip install -r requirements-dev.txt --extra-index-url $(PIP_EXTRA_INDEX_URL)
       displayName: 'Install dependencies'
 
     - script: make code
