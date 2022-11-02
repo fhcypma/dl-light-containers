@@ -5,8 +5,7 @@ install:
 	pipenv shell || echo "Continuing"
 
 test:
-	cd spark-on-lambda
-	./test.sh
+	./spark-on-lambda/test.sh
 
 code:
 	black src/dl_light_containers --check
