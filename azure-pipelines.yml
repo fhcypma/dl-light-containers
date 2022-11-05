@@ -8,6 +8,10 @@ resources:
   - container: localstack/localstack
     image: localstack
 
+
+services:
+  localstack: localstack
+
 pool:
   vmImage: ubuntu-latest
 
@@ -19,10 +23,6 @@ stages:
 - stage: Test
   jobs:
   - job: Test
-
-    services:
-      localstack: localstack
-
 
     steps:
     - task: UsePythonVersion@0
