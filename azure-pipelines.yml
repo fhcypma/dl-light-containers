@@ -21,7 +21,7 @@ stages:
   - job: Test
 
     services:
-      localstack_main: localstack
+      localstack: localstack
 
 
     steps:
