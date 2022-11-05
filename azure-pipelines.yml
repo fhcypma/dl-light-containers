@@ -7,6 +7,12 @@ resources:
   containers:
   - container: localstack
     image: localstack/localstack:latest
+    env:
+     - SERVICES=s3:4566
+     - DATA_DIR=/tmp/localstack/data
+    ports:
+     - "4563-4599:4563-4599"
+     - "9999:8080"
 
 pool:
   vmImage: ubuntu-latest
