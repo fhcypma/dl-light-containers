@@ -5,9 +5,9 @@
 
 resources:
   containers:
-  - container: localstack/localstack
+  - container: localstack
     image: localstack:latest
-    
+
 pool:
   vmImage: ubuntu-latest
 
