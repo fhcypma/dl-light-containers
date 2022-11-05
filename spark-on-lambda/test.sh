@@ -6,8 +6,8 @@ cd "$SCRIPT_DIR"
 echo "Starting S3 API"
 pip install localstack
 pip show localstack
-localstack start -d
-localstack status
+# localstack start -d
+# localstack status
 LOCALSTACK_IP=$(docker inspect localstack_main | jq ".[0].NetworkSettings.IPAddress" -r)
 
 echo "Uploading code"
@@ -44,7 +44,7 @@ echo $RESP
 
 echo "Stopping containers"
 docker kill spark-on-lambda
-localstack stop
+# localstack stop
 
 JOB_NAME=$(echo "$RESP" | jq '.hello' -r)
 echo $JOB_NAME

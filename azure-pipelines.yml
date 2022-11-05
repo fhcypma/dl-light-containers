@@ -15,6 +15,15 @@ stages:
   jobs:
   - job: Test
 
+    resources:
+      containers:
+      - container: localstack/localstack
+        image: nginx
+        ports:
+        - 8080:80
+        env:
+          NGINX_PORT: 80
+
     steps:
     - task: UsePythonVersion@0
       inputs:
