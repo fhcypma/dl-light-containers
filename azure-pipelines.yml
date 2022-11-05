@@ -6,7 +6,7 @@
 resources:
   containers:
   - container: localstack/localstack
-    image: localstack_main
+    image: localstack
 
 pool:
   vmImage: ubuntu-latest
@@ -21,7 +21,7 @@ stages:
   - job: Test
 
     services:
-      localstack_main: localstack_main
+      localstack_main: localstack
 
 
     steps:
