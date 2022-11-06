@@ -63,7 +63,9 @@ stages:
         awsCredentials: 'yds-deploy'
         regionName: 'eu-west-1'
         scriptType: 'inline'
-        inlineScript: DYNACONF_BUILD_NUMBER=ci-build cdk deploy ContainerStack --require-approval never
+        inlineScript: |
+          ls -lR
+          DYNACONF_BUILD_NUMBER=ci-build cdk deploy ContainerStack --require-approval never
         workingDirectory: '$(System.DefaultWorkingDirectory)'
       displayName: 'Cdk deploy'
 

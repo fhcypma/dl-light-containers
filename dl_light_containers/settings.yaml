@@ -1,0 +1,15 @@
+default:
+  aws:
+    region: eu-west-1
+    accounts:
+      deploy: "092113928458"
+      data: "534282717446"
+      etl: "319406913669"
+
+    tags:
+      Application: "Common"
+
+  
+  # Version for the docker container
+  # To be overwritten by pipeline in DYNACONF_BUILD_NUMBER
+  build_number: "local"
