@@ -1,5 +1,5 @@
 {
-  "app": "python3 src/dl_light_containers/cdk.py",
+  "app": "python3 dl_light_containers/cdk.py",
   "watch": {
     "include": [
       "**"

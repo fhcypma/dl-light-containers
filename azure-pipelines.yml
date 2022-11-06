@@ -50,6 +50,7 @@ stages:
         # Setting this variable to "true" will force pip to get distributions from official python registry first and fallback to feeds mentioned above if distributions are not found there.
         onlyAddExtraIndex: true
 
+    # Added a workaround for installing the project feed package
     - script: |
         python -m pip install pipenv
         python -m pip install dl-light-infra --index $(PIP_EXTRA_INDEX_URL)
