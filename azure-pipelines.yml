@@ -22,8 +22,55 @@ variables:
   feed: dl-light
 
 stages:
-- stage: Test
+
+- stage: Stage
   jobs:
+  - job: Publish
+    displayName: "Build and publish"
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.9'
+      displayName: 'Use Python 3.9'
+
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '14.x'
+      displayName: 'Install 14.x'
+
+    - script: |
+        sudo npm install -g aws-cdk
+        cdk --version
+      displayName: 'Installing aws cdk'
+
+    - script: |
+        python -m pip install pipenv
+        python -m pipenv requirements > requirements.txt
+        python -m pip install -r requirements.txt
+      displayName: "Install dependencies"
+
+    - task: AWSShellScript@1
+      inputs:
+        awsCredentials: 'yds-deploy'
+        regionName: 'eu-west-1'
+        scriptType: 'inline'
+        inlineScript: DYNACONF_BUILD_NUMBER=ci-build cdk deploy ContainerStack --require-approval never
+        workingDirectory: '$(System.DefaultWorkingDirectory)'
+      displayName: 'Cdk deploy'
+
+- stage: Test
+  dependsOn: Stage
+  jobs:
+  - job: Build
+
+    steps:
+    - task: Docker@2
+      displayName: Build image
+      inputs:
+        repository: $(imageName)
+        command: build
+        Dockerfile: spark-on-labda/Dockerfile
+
   - job: Test
 
     services:
@@ -55,48 +102,3 @@ stages:
 
     - script: make test
       displayName: Test
-
-- stage: Publish
-  dependsOn: Test
-  jobs:
-  - job: Publish
-    displayName: "Build and publish"
-    steps:
-    - task: UsePythonVersion@0
-      inputs:
-        versionSpec: '3.9'
-      displayName: 'Use Python 3.9'
-
-    - task: NodeTool@0
-      inputs:
-        versionSpec: '14.x'
-      displayName: 'Install 14.x'
-
-    - script: |
-        sudo npm install -g aws-cdk
-        cdk --version
-      displayName: 'Installing aws cdk'
-
-    - script: |
-        python -m pip install pipenv
-        python -m pipenv requirements > requirements.txt
-        python -m pip install -r requirements.txt
-      displayName: "Install dependencies"
-
-    - script: |
-        build="$(Build.BuildNumber)"
-        tag="dev${build//./}"
-        echo "$tag"
-        python -m pip install build
-        python -m build -C--build-option=egg_info -C--build-option=--tag-build=${tag} --wheel
-      displayName: Build pre-release
-      condition: ne(variables['Build.SourceBranchName'], 'main' )
-
-    - task: AWSShellScript@1
-      inputs:
-        awsCredentials: 'yds-deploy'
-        regionName: 'eu-west-1'
-        scriptType: 'inline'
-        inlineScript: ENV_FOR_DYNACONF=prd DYNACONF_BUILD_NUMBER=$(Build.BuildNumber) cdk deploy PrdContainerStack --require-approval never
-        workingDirectory: '$(System.DefaultWorkingDirectory)'
-      displayName: 'Cdk deploy'

@@ -6,7 +6,7 @@ name = "pypi"
 [[source]]
 url = "https://pkgs.dev.azure.com/ypma-data/dl-light/_packaging/dl-light/pypi/simple/"
 verify_ssl = true
-name = "azdo"
+name = "pkgsdevazure"
 
 [packages]
 aws-cdk-lib = "*"
@@ -14,7 +14,7 @@ cdk-ecr-deployment = "*"
 constructs = "*"
 dynaconf = "*"
 artifacts-keyring = "*"
-dl-light-infra = {version = "*", index = "azdo"}
+dl-light-infra = {version = "==0.0.3", index = "pkgsdevazure"}
 
 [dev-packages]
 pytest = "*"
