@@ -43,6 +43,13 @@ stages:
         cdk --version
       displayName: 'Installing aws cdk'
 
+    - task: PipAuthenticate@1
+      displayName: 'Pip Authenticate'
+      inputs:
+        artifactFeeds: 'dl-light/dl-light'
+        # Setting this variable to "true" will force pip to get distributions from official python registry first and fallback to feeds mentioned above if distributions are not found there.
+        onlyAddExtraIndex: true
+
     - script: |
         python -m pip install pipenv
         python -m pip install dl-light-infra --index $(PIP_EXTRA_INDEX_URL)
