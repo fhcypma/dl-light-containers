@@ -45,6 +45,7 @@ stages:
 
     - script: |
         python -m pip install pipenv
+        python -m pip install dl-light-infra --index $(PIP_EXTRA_INDEX_URL)
         python -m pipenv requirements > requirements.txt
         python -m pip install -r requirements.txt
       displayName: "Install dependencies"
