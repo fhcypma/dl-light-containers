@@ -1,4 +1,3 @@
-
 pool:
   vmImage: ubuntu-latest
 
@@ -9,7 +8,8 @@ stages:
 
 - stage: Deploy
   jobs:
-  - job: Cdk deploy
+  - job: Cdk
+    displayName: "Cdk deploy"
     steps:
     - task: UsePythonVersion@0
       inputs:
