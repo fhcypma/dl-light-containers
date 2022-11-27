@@ -61,7 +61,7 @@ stages:
 
     # Pulling before building, so we already have certain (or all) layers
     - task: ECRPullImage@1
-      displayName: "Pull latest image from ECR"
+      displayName: "Pull latest from ECR"
       inputs:
         awsCredentials: yds-deploy
         regionName: $(region)
@@ -69,13 +69,15 @@ stages:
         imageTag: latest
 
     - task: Docker@2
+      displayName: "Docker build"
       inputs:
         command: build
         Dockerfile: spark-on-lambda/Dockerfile
+        arguments: '--cache-from=092113928458.dkr.ecr.eu-west-1.amazonaws.com/spark-on-lambda:latest' 
         tags: ci
 
     - task: ECRPushImage@1
-      displayName: "Push build to ECR"
+      displayName: "Push to ECR"
       inputs:
         awsCredentials: yds-deploy
         regionName: $(region)
