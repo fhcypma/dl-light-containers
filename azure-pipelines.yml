@@ -57,6 +57,7 @@ stages:
   jobs:
   - job: Build
 
+    steps:
     - task: ECRPullImage@1
       inputs:
         awsCredentials: yds-deploy
