@@ -56,14 +56,34 @@ stages:
   dependsOn: Deploy
   jobs:
   - job: Build
-
+    displayName: "Spark-on-lambda docker build and push"
     steps:
+
+    # Pulling before building, so we already have certain (or all) layers
     - task: ECRPullImage@1
+      displayName: "Pull latest image from ECR"
       inputs:
         awsCredentials: yds-deploy
         regionName: $(region)
         repository: $(image-name)
         imageTag: latest
+
+    - task: Docker@2
+      inputs:
+        command: build
+        Dockerfile: spark-on-lambda/Dockerfile
+        tags: ci
+
+    - task: ECRPushImage@1
+      displayName: "Push build to ECR"
+      inputs:
+        awsCredentials: yds-deploy
+        regionName: $(region)
+        imageSource: 'imagename'
+        sourceImageName: $(image-name)
+        sourceImageTag: ci
+        repositoryName: $(image-name)
+        pushTag: "$(Build.BuildNumber)-ci"
 
     # - task: AWSShellScript@1
     #   inputs:
