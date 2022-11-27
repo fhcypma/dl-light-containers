@@ -3,6 +3,7 @@ pool:
 
 variables:
   image-name: spark-on-lambda
+  region: eu-west-1
 
 stages:
 
@@ -43,19 +44,32 @@ stages:
 
     - task: AWSShellScript@1
       inputs:
-        awsCredentials: 'yds-deploy'
-        regionName: 'eu-west-1'
-        scriptType: 'inline'
+        awsCredentials: yds-deploy
+        regionName: $(region)
+        scriptType: inline
         inlineScript: |
-          ls -lR
           DYNACONF_BUILD_NUMBER="$(Build.BuildNumber)" cdk deploy ContainerStack --require-approval never
-        workingDirectory: '$(System.DefaultWorkingDirectory)'
-      displayName: 'Cdk deploy'
+        workingDirectory: $(System.DefaultWorkingDirectory)
+      displayName: "Cdk deploy"
 
-# - stage: Publish
-#   dependsOn: Deploy
-#   jobs:
-#   - job: Build
+- stage: Publish
+  dependsOn: Deploy
+  jobs:
+  - job: Build
+
+    - task: AWSShellScript@1
+      inputs:
+        awsCredentials: yds-deploy
+        regionName: $(region)
+        scriptType: inline
+        inlineScript: |
+          AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
+          ECR_REPOSITORY_URL="$AWS_ACCOUNT_ID.dkr.ecr.$(region).amazonaws.com"
+          aws ecr get-login-password --region "$(region)" | docker login --username AWS --password-stdin "$ECR_REPOSITORY_URL"
+          # Pulling before building, so we already have certain (or all) layers
+          docker pull "$(image-name):latest" || echo "No latest image available"
+        workingDirectory: $(System.DefaultWorkingDirectory)
+      displayName: "Pull latest"
 
 #     steps:
 #     - task: Docker@2
