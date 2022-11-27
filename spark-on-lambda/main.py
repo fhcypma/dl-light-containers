@@ -26,7 +26,7 @@ def create_spark_session(
 def execute_job(job_name: str, run_date, spark_config: dict = None):
     spark = create_spark_session(job_name, config=spark_config)
     logger.info("Reading data")
-    spark.read.option("header", "true").csv("test_data.csv").show()
+    spark.createDataFrame([(1, 2)], ["col1", "col2"]).show()
     res = {
         "hello": job_name,
         "run_date": str(run_date),

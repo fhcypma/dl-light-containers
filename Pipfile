@@ -14,7 +14,7 @@ cdk-ecr-deployment = "*"
 constructs = "*"
 dynaconf = "*"
 artifacts-keyring = "*"
-dl-light-infra = {version = "==0.0.3", index = "pkgsdevazure"}
+dl-light-infra = {version = "==0.0.10", index = "pkgsdevazure"}
 
 [dev-packages]
 pytest = "*"

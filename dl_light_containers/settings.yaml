@@ -7,9 +7,15 @@ default:
       etl: "319406913669"
 
     tags:
-      Application: "Common"
+      Application: "Containers"
+      Environment: "@format {this.current_env}"
 
-  
-  # Version for the docker container
+  # Tag for the docker image
+  image_tag: "local"
+
+tst:
   # To be overwritten by pipeline in DYNACONF_BUILD_NUMBER
-  build_number: "local"
+  image_tag: "@format {this.build_number}-ci"
+
+publish:
+  image_tag: "@format {this.build_number}"

@@ -1,3 +1,4 @@
+import sys
 import datetime
 import json
 import logging
@@ -11,11 +12,13 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 
-LOCAL_ZIP_FILE_NAME = "code.zip"
+# Can only write to /tmp on Lambda
+LOCAL_ZIP_FILE_NAME = "/tmp/app.zip"
+LOCAL_TMP_PATH = "/tmp/app"
 
 
 def download_code(bucket_name: str, key: str):
-    logging.info(f"Downloading code s3://{bucket_name}/{key}")
+    logger.info(f"Downloading code s3://{bucket_name}/{key}")
 
     if os.path.exists(LOCAL_ZIP_FILE_NAME):
         os.remove(LOCAL_ZIP_FILE_NAME)
@@ -34,10 +37,11 @@ def download_code(bucket_name: str, key: str):
 
 def unzip_code():
     with zipfile.ZipFile(LOCAL_ZIP_FILE_NAME, "r") as f:
-        f.extractall(".")
+        f.extractall(LOCAL_TMP_PATH)
 
 
 def execute_code(event, context):
+    sys.path.append(LOCAL_TMP_PATH)
     from main import execute_job
 
     if "log_level" in event:
@@ -63,7 +67,13 @@ def execute_code(event, context):
 
 
 def lambda_handler(event, context):
-    event = json.loads(event)  # In some way required when running docker locally
+    logger.info(type(event))
+    logger.info(event)
+
+    if type(event) == str:
+        # In some way required when running docker locally
+        event = json.loads(event)
+    
     assert "code" in event, 'No key to code provided, set event["code"]'
 
     code_key = event["code"]

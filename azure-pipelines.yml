@@ -1,32 +1,15 @@
-# Python package
-# Create and test a Python package on multiple Python versions.
-# Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/python
-
-resources:
-  containers:
-  - container: localstack
-    image: localstack/localstack:latest
-    env:
-      SERVICES: s3:4566
-      DATA_DIR: /tmp/localstack/data
-    ports:
-     - "4563-4599:4563-4599"
-     - "9999:8080"
 
 pool:
   vmImage: ubuntu-latest
 
 variables:
-  project: dl-light
-  feed: dl-light
+  image-name: spark-on-lambda
 
 stages:
 
-- stage: Stage
+- stage: Deploy
   jobs:
-  - job: Publish
-    displayName: "Build and publish"
+  - job: Cdk deploy
     steps:
     - task: UsePythonVersion@0
       inputs:
@@ -65,51 +48,51 @@ stages:
         scriptType: 'inline'
         inlineScript: |
           ls -lR
-          DYNACONF_BUILD_NUMBER=ci-build cdk deploy ContainerStack --require-approval never
+          DYNACONF_BUILD_NUMBER=${Build.BuildNumber} cdk deploy ContainerStack --require-approval never
         workingDirectory: '$(System.DefaultWorkingDirectory)'
       displayName: 'Cdk deploy'
 
-- stage: Test
-  dependsOn: Stage
-  jobs:
-  - job: Build
+# - stage: Publish
+#   dependsOn: Deploy
+#   jobs:
+#   - job: Build
 
-    steps:
-    - task: Docker@2
-      displayName: Build image
-      inputs:
-        repository: $(imageName)
-        command: build
-        Dockerfile: spark-on-labda/Dockerfile
+#     steps:
+#     - task: Docker@2
+#       displayName: Build image
+#       inputs:
+#         repository: $(imageName)
+#         command: build
+#         Dockerfile: spark-on-labda/Dockerfile
 
-  - job: Test
+#   - job: Test
 
-    services:
-      localstack: localstack
+#     services:
+#       localstack: localstack
 
-    steps:
-    - task: UsePythonVersion@0
-      inputs:
-        versionSpec: '3.9'
-      displayName: 'Use Python 3.9'
+#     steps:
+#     - task: UsePythonVersion@0
+#       inputs:
+#         versionSpec: '3.9'
+#       displayName: 'Use Python 3.9'
 
-    - task: PipAuthenticate@1
-      displayName: 'Pip Authenticate'
-      inputs:
-        artifactFeeds: 'dl-light/dl-light'
-        # Setting this variable to "true" will force pip to get distributions from official python registry first and fallback to feeds mentioned above if distributions are not found there.
-        onlyAddExtraIndex: true
+#     - task: PipAuthenticate@1
+#       displayName: 'Pip Authenticate'
+#       inputs:
+#         artifactFeeds: 'dl-light/dl-light'
+#         # Setting this variable to "true" will force pip to get distributions from official python registry first and fallback to feeds mentioned above if distributions are not found there.
+#         onlyAddExtraIndex: true
 
-    # Added a workaround for installing the project feed package
-    - script: |
-        python -m pip install pipenv
-        python -m pip install dl-light-infra --index $(PIP_EXTRA_INDEX_URL)
-        python -m pipenv requirements --dev > requirements-dev.txt
-        python -m pip install -r requirements-dev.txt
-      displayName: 'Install dependencies'
+#     # Added a workaround for installing the project feed package
+#     - script: |
+#         python -m pip install pipenv
+#         python -m pip install dl-light-infra --index $(PIP_EXTRA_INDEX_URL)
+#         python -m pipenv requirements --dev > requirements-dev.txt
+#         python -m pip install -r requirements-dev.txt
+#       displayName: 'Install dependencies'
 
-    - script: make code
-      displayName: 'Linting and code formatting check'
+#     - script: make code
+#       displayName: 'Linting and code formatting check'
 
-    - script: make test
-      displayName: Test
+#     - script: make test
+#       displayName: Test
