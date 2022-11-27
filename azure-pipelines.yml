@@ -48,7 +48,7 @@ stages:
         scriptType: 'inline'
         inlineScript: |
           ls -lR
-          DYNACONF_BUILD_NUMBER=${Build.BuildNumber} cdk deploy ContainerStack --require-approval never
+          DYNACONF_BUILD_NUMBER="$(Build.BuildNumber)" cdk deploy ContainerStack --require-approval never
         workingDirectory: '$(System.DefaultWorkingDirectory)'
       displayName: 'Cdk deploy'
 
