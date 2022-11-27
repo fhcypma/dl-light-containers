@@ -63,7 +63,7 @@ stages:
         regionName: $(region)
         scriptType: inline
         inlineScript: |
-          AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
+          AWS_ACCOUNT_ID=$((aws sts get-caller-identity --query "Account" --output text))
           # ECR_REPOSITORY_URL="$AWS_ACCOUNT_ID.dkr.ecr.$(region).amazonaws.com"
           # aws ecr get-login-password --region "$(region)" | docker login --username AWS --password-stdin "$ECR_REPOSITORY_URL"
           # Pulling before building, so we already have certain (or all) layers
