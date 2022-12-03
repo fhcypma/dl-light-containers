@@ -9,76 +9,76 @@ variables:
 
 stages:
 
-- stage: Deploy
-  jobs:
-  - job: Cdk
-    displayName: "Cdk deploy"
-    steps:
-    - task: UsePythonVersion@0
-      inputs:
-        versionSpec: '3.9'
-      displayName: 'Use Python 3.9'
+# - stage: Deploy
+#   jobs:
+#   - job: Cdk
+#     displayName: "Cdk deploy"
+#     steps:
+#     - task: UsePythonVersion@0
+#       inputs:
+#         versionSpec: '3.9'
+#       displayName: 'Use Python 3.9'
 
-    - task: NodeTool@0
-      inputs:
-        versionSpec: '14.x'
-      displayName: 'Install 14.x'
+#     - task: NodeTool@0
+#       inputs:
+#         versionSpec: '14.x'
+#       displayName: 'Install 14.x'
 
-    - script: |
-        sudo npm install -g aws-cdk
-        cdk --version
-      displayName: 'Installing aws cdk'
+#     - script: |
+#         sudo npm install -g aws-cdk
+#         cdk --version
+#       displayName: 'Installing aws cdk'
 
-    - task: PipAuthenticate@1
-      displayName: 'Pip Authenticate'
-      inputs:
-        artifactFeeds: 'dl-light/dl-light'
-        # Setting this variable to "true" will force pip to get distributions from official python registry first and fallback to feeds mentioned above if distributions are not found there.
-        onlyAddExtraIndex: true
+#     - task: PipAuthenticate@1
+#       displayName: 'Pip Authenticate'
+#       inputs:
+#         artifactFeeds: 'dl-light/dl-light'
+#         # Setting this variable to "true" will force pip to get distributions from official python registry first and fallback to feeds mentioned above if distributions are not found there.
+#         onlyAddExtraIndex: true
 
-    # Added a workaround for installing the project feed package
-    - script: |
-        python -m pip install pipenv
-        python -m pip install dl-light-infra --index $(PIP_EXTRA_INDEX_URL)
-        python -m pipenv requirements > requirements.txt
-        python -m pip install -r requirements.txt
-      displayName: "Install dependencies"
+#     # Added a workaround for installing the project feed package
+#     - script: |
+#         python -m pip install pipenv
+#         python -m pip install dl-light-infra --index $(PIP_EXTRA_INDEX_URL)
+#         python -m pipenv requirements > requirements.txt
+#         python -m pip install -r requirements.txt
+#       displayName: "Install dependencies"
 
-    - task: AWSShellScript@1
-      inputs:
-        awsCredentials: yds-deploy
-        regionName: $(region)
-        scriptType: inline
-        inlineScript: |
-          DYNACONF_BUILD_NUMBER="$(Build.BuildNumber)" cdk deploy --all --require-approval never
-        workingDirectory: $(System.DefaultWorkingDirectory)
-      displayName: "Cdk deploy"
+#     - task: AWSShellScript@1
+#       inputs:
+#         awsCredentials: yds-deploy
+#         regionName: $(region)
+#         scriptType: inline
+#         inlineScript: |
+#           DYNACONF_BUILD_NUMBER="$(Build.BuildNumber)" cdk deploy --all --require-approval never
+#         workingDirectory: $(System.DefaultWorkingDirectory)
+#       displayName: "Cdk deploy"
 
 - stage: Publish
-  dependsOn: Deploy
+  # dependsOn: Deploy
   jobs:
   - job: Build
     displayName: "Spark-on-lambda docker build and push"
     steps:
 
-    - task: Docker@2
-      displayName: Docker build
-      inputs:
-        command: build
-        Dockerfile: spark-on-lambda/Dockerfile
-        repository: $(image-name)
-        tags: $(tag)
+    # - task: Docker@2
+    #   displayName: Docker build
+    #   inputs:
+    #     command: build
+    #     Dockerfile: spark-on-lambda/Dockerfile
+    #     repository: $(image-name)
+    #     tags: $(tag)
 
-    - task: ECRPushImage@1
-      displayName: Push to ECR
-      inputs:
-        awsCredentials: yds-deploy
-        regionName: $(region)
-        imageSource: 'imagename'
-        sourceImageName: $(image-name)
-        sourceImageTag: $(tag)
-        repositoryName: $(image-name)
-        pushTag: $(tag)
+    # - task: ECRPushImage@1
+    #   displayName: Push to ECR
+    #   inputs:
+    #     awsCredentials: yds-deploy
+    #     regionName: $(region)
+    #     imageSource: 'imagename'
+    #     sourceImageName: $(image-name)
+    #     sourceImageTag: $(tag)
+    #     repositoryName: $(image-name)
+    #     pushTag: $(tag)
 
   - job: Test
     steps:
@@ -89,6 +89,7 @@ stages:
         regionName: $(region)
         scriptType: inline
         inlineScript: |
+          ls
           zip test.zip main.py
           aws s3 cp test.zip s3://yds.tst.container-test.code
         workingDirectory: $(System.DefaultWorkingDirectory)/spark-on-lambda
