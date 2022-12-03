@@ -3,7 +3,9 @@ pool:
 
 variables:
   image-name: spark-on-lambda
+  tag: '$(Build.BuildId)-ci'
   region: eu-west-1
+
 
 stages:
 
@@ -77,25 +79,25 @@ stages:
 
     - script: |
         docker load -i $(Pipeline.Workspace)/docker/cache.tar
-      displayName: Docker restore from cache
+      displayName: Restore docker layers from cache
       condition: and(not(canceled()), eq(variables.CACHE_RESTORED, 'true'))
 
     - task: Docker@2
-      displayName: "Docker build"
+      displayName: Docker build
       inputs:
         command: build
         Dockerfile: spark-on-lambda/Dockerfile
         repository: $(image-name)
-        tags: ci
+        tags: $(tag)
 
     - script: |
         mkdir -p $(Pipeline.Workspace)/docker
         docker save -o $(Pipeline.Workspace)/docker/cache.tar $(image-name):$(tag)
-      displayName: Docker save to cache
+      displayName: Save docker image to cache
       condition: and(not(canceled()), or(failed(), ne(variables.CACHE_RESTORED, 'true')))
 
     - task: ECRPushImage@1
-      displayName: "Push to ECR"
+      displayName: Push to ECR
       inputs:
         awsCredentials: yds-deploy
         regionName: $(region)
