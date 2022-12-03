@@ -57,9 +57,9 @@ stages:
 - stage: Publish
   # dependsOn: Deploy
   jobs:
-  - job: Build
-    displayName: "Spark-on-lambda docker build and push"
-    steps:
+  # - job: Build
+  #   displayName: "Spark-on-lambda docker build and push"
+  #   steps:
 
     # - task: Docker@2
     #   displayName: Docker build
