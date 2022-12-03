@@ -89,7 +89,6 @@ stages:
         regionName: $(region)
         scriptType: inline
         inlineScript: |
-          ls
           zip test.zip main.py
           aws s3 cp test.zip s3://yds.tst.container-test.code
         disableAutoCwd: true
@@ -107,6 +106,7 @@ stages:
             --payload file://test_payload.json \
             --cli-binary-format raw-in-base64-out \
             response.json
+        disableAutoCwd: true
         workingDirectory: $(System.DefaultWorkingDirectory)/spark-on-lambda
       displayName: Run lambda
 
