@@ -103,9 +103,9 @@ stages:
         regionName: $(region)
         imageSource: 'imagename'
         sourceImageName: $(image-name)
-        sourceImageTag: ci
+        sourceImageTag: $(tag)
         repositoryName: $(image-name)
-        pushTag: "$(Build.BuildNumber)-ci"
+        pushTag: $(tag)
 
 
     # - task: AWSShellScript@1
