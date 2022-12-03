@@ -81,6 +81,7 @@ stages:
         pushTag: $(tag)
 
   - job: Test
+    steps:
 
     - task: AWSShellScript@1
       inputs:
@@ -91,7 +92,7 @@ stages:
           zip test.zip main.py
           aws s3 cp test.zip s3://yds.tst.container-test.code
         workingDirectory: $(System.DefaultWorkingDirectory)/spark-on-lambda
-      displayName: "Deploy test code"
+      displayName: Deploy test code
 
     - task: AWSShellScript@1
       inputs:
@@ -105,4 +106,19 @@ stages:
             --cli-binary-format raw-in-base64-out \
             response.json
         workingDirectory: $(System.DefaultWorkingDirectory)/spark-on-lambda
-      displayName: "Deploy test code"
+      displayName: Run lambda
+
+  - job: Release
+    steps:
+
+    - task: AWSShellScript@1
+      inputs:
+        awsCredentials: yds-deploy
+        regionName: $(region)
+        scriptType: inline
+        inlineScript: |
+          MANIFEST=$(aws ecr batch-get-image --repository-name $(image-name) --image-ids imageTag=$(tag) --output json | jq --raw-output --join-output '.images[0].imageManifest')
+          aws ecr put-image --repository-name $(image-name) --image-tag $(Build.BuildNumber) --image-manifest "$MANIFEST"
+          aws ecr batch-delete-image --repository-name "$(image-name)" --image-ids imageTag=$(tag)
+        workingDirectory: $(System.DefaultWorkingDirectory)/spark-on-lambda
+      displayName: Retag image
