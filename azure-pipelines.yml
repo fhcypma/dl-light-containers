@@ -92,6 +92,7 @@ stages:
           ls
           zip test.zip main.py
           aws s3 cp test.zip s3://yds.tst.container-test.code
+        disableAutoCwd: true
         workingDirectory: $(System.DefaultWorkingDirectory)/spark-on-lambda
       displayName: Deploy test code
 
