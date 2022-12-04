@@ -26,6 +26,8 @@ class SparkOnLambdaRepoStack(BasicStack):
         for account in etl_accounts:
             repo.grant_pull(iam.AccountPrincipal(account))
 
+        repo.grant_pull(iam.ServicePrincipal("lambda.amazonaws.com"))
+
         # # Publish image to CDK default repo
         # image = ecr_assets.DockerImageAsset(
         #     self,
