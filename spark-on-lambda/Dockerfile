@@ -1,7 +1,7 @@
 FROM amazon/aws-lambda-python:latest
 
 # The next two need to match
-ARG PYSPARK_VERSION=3.3.1
+ARG PYSPARK_VERSION=3.2.1
 ARG HADOOP_VERSION=3.3.1
 ARG AWS_SDK_VERSION=1.12.305
 
