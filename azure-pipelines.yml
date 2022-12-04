@@ -2,7 +2,7 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  image-name: spark-on-lambda
+  image-name: spark3-on-lambda
   tmp-tag: ci
   region: eu-west-1
 
@@ -64,7 +64,7 @@ stages:
       displayName: Docker build
       inputs:
         command: build
-        Dockerfile: spark-on-lambda/Dockerfile
+        Dockerfile: spark3-on-lambda/Dockerfile
         repository: $(image-name)
         tags: $(tmp-tag)
 
@@ -135,7 +135,7 @@ stages:
           zip test.zip main.py
           aws s3 cp test.zip s3://yds.tst.container-test.code
         disableAutoCwd: true
-        workingDirectory: $(System.DefaultWorkingDirectory)/spark-on-lambda
+        workingDirectory: $(System.DefaultWorkingDirectory)/spark3-on-lambda
       displayName: Deploy test code
 
     - task: AWSShellScript@1
@@ -150,7 +150,7 @@ stages:
             --cli-binary-format raw-in-base64-out \
             response.json
         disableAutoCwd: true
-        workingDirectory: $(System.DefaultWorkingDirectory)/spark-on-lambda
+        workingDirectory: $(System.DefaultWorkingDirectory)/spark3-on-lambda
       displayName: Run lambda
 
   - job: Release
@@ -165,7 +165,7 @@ stages:
         inlineScript: |
           MANIFEST=$(aws ecr batch-get-image --repository-name $(image-name) --image-ids imageTag=$(tmp-tag) --output json | jq --raw-output --join-output '.images[0].imageManifest')
           aws ecr put-image --repository-name $(image-name) --image-tag $(Build.BuildNumber) --image-manifest "$MANIFEST"
-        workingDirectory: $(System.DefaultWorkingDirectory)/spark-on-lambda
+        workingDirectory: $(System.DefaultWorkingDirectory)/spark3-on-lambda
       displayName: Retag image
 
   - job: Cleanup
@@ -179,7 +179,7 @@ stages:
         scriptType: inline
         inlineScript: |
           aws ecr batch-delete-image --repository-name "$(image-name)" --image-ids imageTag=$(tmp-tag)
-        workingDirectory: $(System.DefaultWorkingDirectory)/spark-on-lambda
+        workingDirectory: $(System.DefaultWorkingDirectory)/spark3-on-lambda
       displayName: Cleanup ci image
 
     - task: AWSShellScript@1
@@ -189,7 +189,7 @@ stages:
         scriptType: inline
         inlineScript: |
           aws s3 rm s3://yds.tst.container-test.code/test.zip
-        workingDirectory: $(System.DefaultWorkingDirectory)/spark-on-lambda
+        workingDirectory: $(System.DefaultWorkingDirectory)/spark3-on-lambda
       displayName: Cleanup test code
 
     - task: UsePythonVersion@0

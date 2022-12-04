@@ -14,7 +14,7 @@ create_dataset_app(
     env=settings.current_env,
     etl_account=settings.aws.accounts.deploy,
     data_account=settings.aws.accounts.deploy,
-    ecr_repository_arn=f"arn:aws:ecr:eu-west-1:{settings.aws.accounts.deploy}:repository/spark-on-lambda",
+    ecr_repository_arn=f"arn:aws:ecr:eu-west-1:{settings.aws.accounts.deploy}:repository/spark3-on-lambda",
     etl_image_version=settings.image_tag,
     tags=settings.aws.tags,
 )

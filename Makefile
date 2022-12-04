@@ -5,7 +5,7 @@ install:
 	pipenv shell || echo "Continuing"
 
 test:
-	./spark-on-lambda/test.sh
+	./spark3-on-lambda/test-local.sh
 
 code:
 	black dl_light_containers --check

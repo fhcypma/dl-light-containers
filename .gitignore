@@ -380,4 +380,4 @@ spark-warehouse/
 cdk.out
 
 # Temp file created during test
-spark-on-lambda/test.zip
+spark3-on-lambda/test.zip

@@ -14,7 +14,7 @@ class SparkOnLambdaRepoStack(BasicStack):
         repo = ecr.Repository(
             self,
             "SparkOnLambdaRepo",
-            repository_name="spark-on-lambda",
+            repository_name="spark3-on-lambda",
             removal_policy=RemovalPolicy.DESTROY,
             image_scan_on_push=True,
         )
@@ -28,7 +28,7 @@ class SparkOnLambdaRepoStack(BasicStack):
         # image = ecr_assets.DockerImageAsset(
         #     self,
         #     "SparkOnLambdaImage",
-        #     directory="spark-on-lambda",
+        #     directory="spark3-on-lambda",
         # )
 
         # # Move image from CDK default repo to own repo
@@ -36,5 +36,5 @@ class SparkOnLambdaRepoStack(BasicStack):
         #     self,
         #     "SparkOnLambdaImageVersion",
         #     src=DockerImageName(image.image_uri),
-        #     dest=DockerImageName(f"{repo.repository_uri}/spark-on-lambda:{image_tag}"),
+        #     dest=DockerImageName(f"{repo.repository_uri}/spark3-on-lambda:{image_tag}"),
         # )

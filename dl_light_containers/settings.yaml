@@ -11,5 +11,7 @@ default:
       Environment: "@format {this.current_env}"
 
   # Tag for the docker image
-  # Is overwritten by pipeline in DYNACONF_IMAGE_TAG
+  # Pipeline stages with tag "ci"
+  # During release step, Azire Devops buildnumber is added; e.g. "20220101.1"
   image_tag: "local"
+
