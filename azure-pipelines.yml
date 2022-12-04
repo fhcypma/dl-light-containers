@@ -49,7 +49,7 @@ stages:
         regionName: $(region)
         scriptType: inline
         inlineScript: |
-          DYNACONF_IMAGE_TAG="$(tmp-tag)" cdk deploy --all --require-approval never
+          ENV_FOR_DYNAMCONF=tst DYNACONF_IMAGE_TAG="$(tmp-tag)" cdk deploy --all --require-approval never
         workingDirectory: $(System.DefaultWorkingDirectory)
       displayName: Cdk deploy
 
