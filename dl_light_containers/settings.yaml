@@ -11,11 +11,5 @@ default:
       Environment: "@format {this.current_env}"
 
   # Tag for the docker image
+  # Is overwritten by pipeline in DYNACONF_IMAGE_TAG
   image_tag: "local"
-
-tst:
-  # To be overwritten by pipeline in DYNACONF_BUILD_NUMBER
-  image_tag: "@format {this.build_number}-ci"
-
-publish:
-  image_tag: "@format {this.build_number}"
