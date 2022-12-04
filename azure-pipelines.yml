@@ -57,7 +57,7 @@ stages:
   dependsOn: Deploy
   jobs:
   - job: Stage
-    displayName: Spark-on-lambda docker build and push
+    displayName: Build and push
     steps:
 
     - task: Docker@2
@@ -119,9 +119,12 @@ stages:
         regionName: $(region)
         scriptType: inline
         inlineScript: |
-          ENV_FOR_DYNACONF=tst DYNACONF_IMAGE_TAG="$(tmp-tag)" cdk deploy --all --require-approval never
+          ENV_FOR_DYNACONF=tst \
+          DYNACONF_IMAGE_TAG="$(tmp-tag)" \
+          cdk deploy --all \
+          --require-approval never
         workingDirectory: $(System.DefaultWorkingDirectory)
-      displayName: Cdk deploy test infra
+      displayName: Deploy test infra
 
     - task: AWSShellScript@1
       inputs:
@@ -168,7 +171,7 @@ stages:
   - job: Cleanup
     dependsOn: Test
     steps: 
-    
+
     - task: AWSShellScript@1
       inputs:
         awsCredentials: yds-deploy
@@ -225,8 +228,9 @@ stages:
         regionName: $(region)
         scriptType: inline
         inlineScript: |
-          ENV_FOR_DYNACONF=tst DYNACONF_IMAGE_TAG="$(tmp-tag)" cdk destroy \
-          TstContainerTestEtlRoleStack TstContainerTestDataStack TstContainerTestEtlStack \
-          --require-approval never
+          ENV_FOR_DYNACONF=tst \
+          DYNACONF_IMAGE_TAG="$(tmp-tag)" \
+          cdk destroy TstContainerTestEtlRoleStack TstContainerTestDataStack TstContainerTestEtlStack \
+          --force true
         workingDirectory: $(System.DefaultWorkingDirectory)
-      displayName: Cdk deploy test infra
+      displayName: Destroy test infra

@@ -19,7 +19,9 @@ create_dataset_app(
     tags=settings.aws.tags,
 )
 
-deploy_env = cdk.Environment(account=settings.aws.accounts.deploy, region=settings.aws.region)
+deploy_env = cdk.Environment(
+    account=settings.aws.accounts.deploy, region=settings.aws.region
+)
 
 SparkOnLambdaRepoStack(
     app,

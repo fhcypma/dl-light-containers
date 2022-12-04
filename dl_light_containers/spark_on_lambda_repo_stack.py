@@ -1,17 +1,13 @@
 from typing import List
 import aws_cdk.aws_iam as iam
 import aws_cdk.aws_ecr as ecr
-import aws_cdk.aws_ecr_assets as ecr_assets
 from aws_cdk import RemovalPolicy
-from cdk_ecr_deployment import DockerImageName, ECRDeployment
 from constructs import Construct
 from dl_light_infra.stack.types import BasicStack
 
 
 class SparkOnLambdaRepoStack(BasicStack):
-    def __init__(
-        self, scope: Construct, etl_accounts: List[str], **kwargs
-    ) -> None:
+    def __init__(self, scope: Construct, etl_accounts: List[str], **kwargs) -> None:
         super().__init__(scope, "ContainerStack", **kwargs)
 
         # Create repo
