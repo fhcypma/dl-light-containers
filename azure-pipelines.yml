@@ -169,7 +169,7 @@ stages:
       displayName: Retag image
 
   - job: Cleanup
-    dependsOn: Test
+    dependsOn: Release
     steps: 
 
     - task: AWSShellScript@1
