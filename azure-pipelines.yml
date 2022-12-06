@@ -165,6 +165,7 @@ stages:
         inlineScript: |
           MANIFEST=$(aws ecr batch-get-image --repository-name $(image-name) --image-ids imageTag=$(tmp-tag) --output json | jq --raw-output --join-output '.images[0].imageManifest')
           aws ecr put-image --repository-name $(image-name) --image-tag $(Build.BuildNumber) --image-manifest "$MANIFEST"
+          aws ecr put-image --repository-name $(image-name) --image-tag latest --image-manifest "$MANIFEST"
         workingDirectory: $(System.DefaultWorkingDirectory)/spark3-on-lambda
       displayName: Retag image
 
