@@ -1,0 +1,32 @@
+default:
+  aws:
+    region: eu-west-1
+    accounts:
+      deploy: "092113928458"
+      data: "534282717446"
+      etl: "319406913669"
+
+    vpc:
+      cidr: "10.0.0.0/16"
+
+    mwaa:
+      bucket_name: "@format yds.{this.current_env}.mwaa"
+      environment_class: mw1.small
+      max_workers: 1
+
+    tags:
+      Application: "Containers"
+      Environment: "@format {this.current_env}"
+
+  # Tag for the docker image
+  # Pipeline stages with tag "ci"
+  # During release step, Azire Devops buildnumber is added; e.g. "20220101.1"
+  image_tag: "local"
+
+tst:
+  dynaconf_merge: True
+
+  aws:
+    vpc:
+      cidr: "10.1.0.0/16"
+
