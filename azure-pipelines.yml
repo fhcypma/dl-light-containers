@@ -128,7 +128,6 @@ stages:
 - stage: Cleanup
   jobs:
   - job: Cleanup
-    dependsOn: Release
     steps: 
 
     - task: AWSShellScript@1
