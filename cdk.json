@@ -1,5 +1,5 @@
 {
-  "app": "python3 dl_light_containers/cdk.py",
+  "app": "python3 spark3-on-lambda-test/cdk.py",
   "watch": {
     "include": [
       "**"

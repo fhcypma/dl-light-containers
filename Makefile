@@ -8,9 +8,9 @@ test:
 	./spark3-on-lambda/test-local.sh
 
 code:
-	black dl_light_containers --check
-	flake8 dl_light_containers
-	# mypy dl_light_containers
+	black . --check
+	flake8 .
+	# mypy .
 
 clean:
 	@rm -rf .pytest_cache/ .mypy_cache/ junit/ build/ dist/

@@ -8,53 +8,7 @@ variables:
 
 stages:
 
-- stage: Deploy
-  jobs:
-  - job: Cdk
-    displayName: Cdk deploy
-    steps:
-    - task: UsePythonVersion@0
-      inputs:
-        versionSpec: '3.9'
-      displayName: 'Use Python 3.9'
-
-    - task: NodeTool@0
-      inputs:
-        versionSpec: '14.x'
-      displayName: 'Install 14.x'
-
-    - script: |
-        sudo npm install -g aws-cdk
-        cdk --version
-      displayName: Installing aws cdk
-
-    - task: PipAuthenticate@1
-      displayName: Pip Authenticate
-      inputs:
-        artifactFeeds: dl-light/dl-light
-        # Setting this variable to "true" will force pip to get distributions from official python registry first and fallback to feeds mentioned above if distributions are not found there.
-        onlyAddExtraIndex: true
-
-    # Added a workaround for installing the project feed package
-    - script: |
-        python -m pip install pipenv
-        python -m pip install dl-light-infra --index $(PIP_EXTRA_INDEX_URL)
-        python -m pipenv requirements > requirements.txt
-        python -m pip install -r requirements.txt
-      displayName: Install dependencies
-
-    - task: AWSShellScript@1
-      inputs:
-        awsCredentials: yds-deploy
-        regionName: $(region)
-        scriptType: inline
-        inlineScript: |
-          ENV_FOR_DYNACONF=tst DYNACONF_IMAGE_TAG="$(tmp-tag)" cdk deploy ContainerStack --require-approval never
-        workingDirectory: $(System.DefaultWorkingDirectory)
-      displayName: Cdk deploy
-
-- stage: Publish
-  dependsOn: Deploy
+- stage: Stage
   jobs:
   - job: Stage
     displayName: Build and push
@@ -79,8 +33,9 @@ stages:
         repositoryName: $(image-name)
         pushTag: $(tmp-tag)
 
+- stage: Test
+  jobs:
   - job: Test
-    dependsOn: Stage
     steps:
 
     - task: UsePythonVersion@0
@@ -153,8 +108,9 @@ stages:
         workingDirectory: $(System.DefaultWorkingDirectory)/spark3-on-lambda
       displayName: Run lambda
 
+- stage: Release
+  jobs:
   - job: Release
-    dependsOn: Test
     steps:
 
     - task: AWSShellScript@1
@@ -169,6 +125,8 @@ stages:
         workingDirectory: $(System.DefaultWorkingDirectory)/spark3-on-lambda
       displayName: Retag image
 
+- stage: Cleanup
+  jobs:
   - job: Cleanup
     dependsOn: Release
     steps: 
@@ -231,7 +189,7 @@ stages:
         inlineScript: |
           ENV_FOR_DYNACONF=tst \
           DYNACONF_IMAGE_TAG="$(tmp-tag)" \
-          cdk destroy TstContainerTestEtlRoleStack TstContainerTestDataStack TstContainerTestEtlStack \
+          cdk destroy --all \
           --force true
         workingDirectory: $(System.DefaultWorkingDirectory)
       displayName: Destroy test infra

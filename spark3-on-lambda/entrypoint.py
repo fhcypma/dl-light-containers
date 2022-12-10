@@ -73,7 +73,7 @@ def lambda_handler(event, context):
     if type(event) == str:
         # In some way required when running docker locally
         event = json.loads(event)
-    
+
     assert "code" in event, 'No key to code provided, set event["code"]'
 
     code_key = event["code"]

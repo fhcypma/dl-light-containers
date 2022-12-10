@@ -20,7 +20,7 @@ make test
 make code
 ```
 
-## Deploy to dev
+## Deploy (test stack) to dev
 
 ```shell
 ENV_FOR_DYNACONF=dev cdk deploy
